@@ -1,0 +1,20 @@
+# Build output
+bin/
+obj/
+*.user
+.vs/
+.vscode/
+.idea/
+
+# Local settings
+GameDir.props
+
+# Never commit game or BepInEx assemblies
+lib/
+Managed/
+*.dll
+*.pdb
+
+# Release archives
+release/
+*.zip

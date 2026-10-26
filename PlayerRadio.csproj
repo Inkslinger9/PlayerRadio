@@ -1,0 +1,242 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Optional local settings (your GameDir). Not committed. -->
+  <Import Project="$(MSBuildThisFileDirectory)GameDir.props" Condition="Exists('$(MSBuildThisFileDirectory)GameDir.props')" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>PlayerRadio</AssemblyName>
+    <RootNamespace>PlayerRadio</RootNamespace>
+    <Version>0.2.2</Version>
+    <Authors>Inkslinger</Authors>
+    <Product>Player Radio</Product>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <DebugType>portable</DebugType>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <!-- Reference locations (see "Building" in README.md). Set GameDir to your PEAK install, either
+         - in a GameDir.props file next to this csproj (git-ignored; copy GameDir.props.example), or
+         - on the command line: dotnet build -c Release -p:GameDir="D:\SteamLibrary\steamapps\common\PEAK"
+         If GameDir is not set, the default Steam location is used when it exists. -->
+    <GameDir Condition="'$(GameDir)' == '' And Exists('C:\Program Files (x86)\Steam\steamapps\common\PEAK\PEAK_Data\Managed')">C:\Program Files (x86)\Steam\steamapps\common\PEAK</GameDir>
+    <ManagedDir Condition="'$(ManagedDir)' == '' And '$(GameDir)' != ''">$(GameDir)\PEAK_Data\Managed</ManagedDir>
+    <BepInExCoreDir Condition="'$(BepInExCoreDir)' == '' And '$(GameDir)' != ''">$(GameDir)\BepInEx\core</BepInExCoreDir>
+    <!-- Fallback layout for builds without a game install: game assemblies in ../Managed, BepInEx.dll and 0Harmony.dll in lib/ (both git-ignored). -->
+    <ManagedDir Condition="'$(ManagedDir)' == ''">$(MSBuildThisFileDirectory)../Managed</ManagedDir>
+    <BepInExCoreDir Condition="'$(BepInExCoreDir)' == ''">$(MSBuildThisFileDirectory)lib</BepInExCoreDir>
+    <!-- Unity's netstandard facades vs. SDK ref pack: prefer the SDK one -->
+    <NoWarn>$(NoWarn);MSB3277</NoWarn>
+  </PropertyGroup>
+
+  <!-- AI disclosure, as asked for by Thunderstore (https://wiki.thunderstore.io, "LLMs and AI-generated files"). -->
+  <ItemGroup>
+    <AssemblyMetadata Include="AI_Assisted_Creation" Value="true" />
+    <AssemblyMetadata Include="AI_Model_Vendor" Value="Grok Bot" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="thunderstore/**" />
+    <None Remove="thunderstore/**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BepInEx"><HintPath>$(BepInExCoreDir)/BepInEx.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(BepInExCoreDir)/0Harmony.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+
+  <!-- Game + Unity assemblies (never copied to output) -->
+  <ItemGroup>
+    <Reference Include="Ashley.MeshSplitter"><HintPath>$(ManagedDir)/Ashley.MeshSplitter.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Assembly-CSharp"><HintPath>$(ManagedDir)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Assembly-CSharp-firstpass"><HintPath>$(ManagedDir)/Assembly-CSharp-firstpass.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="DOTween"><HintPath>$(ManagedDir)/DOTween.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="DOTweenPro"><HintPath>$(ManagedDir)/DOTweenPro.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="DemiLib"><HintPath>$(ManagedDir)/DemiLib.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="EpicCommon"><HintPath>$(ManagedDir)/EpicCommon.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="EpicOnlineService"><HintPath>$(ManagedDir)/EpicOnlineService.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="HBAO.Runtime"><HintPath>$(ManagedDir)/HBAO.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="HBAO.Universal.Runtime"><HintPath>$(ManagedDir)/HBAO.Universal.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="LightVolume.Runtime"><HintPath>$(ManagedDir)/LightVolume.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Managers"><HintPath>$(ManagedDir)/Managers.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Photon"><HintPath>$(ManagedDir)/Photon.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Photon3Unity3D"><HintPath>$(ManagedDir)/Photon3Unity3D.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="PhotonChat"><HintPath>$(ManagedDir)/PhotonChat.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="PhotonRealtime"><HintPath>$(ManagedDir)/PhotonRealtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="PhotonUnityNetworking"><HintPath>$(ManagedDir)/PhotonUnityNetworking.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="PhotonUnityNetworking.Utilities"><HintPath>$(ManagedDir)/PhotonUnityNetworking.Utilities.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="PhotonVoice"><HintPath>$(ManagedDir)/PhotonVoice.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="PhotonVoice.API"><HintPath>$(ManagedDir)/PhotonVoice.API.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="PhotonVoice.PUN"><HintPath>$(ManagedDir)/PhotonVoice.PUN.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="PlatformProviders"><HintPath>$(ManagedDir)/PlatformProviders.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Platforms"><HintPath>$(ManagedDir)/Platforms.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="PortningsbolagetMemory"><HintPath>$(ManagedDir)/PortningsbolagetMemory.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Sirenix.OdinInspector.Attributes"><HintPath>$(ManagedDir)/Sirenix.OdinInspector.Attributes.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Sirenix.OdinInspector.Modules.Unity.Addressables"><HintPath>$(ManagedDir)/Sirenix.OdinInspector.Modules.Unity.Addressables.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Sirenix.OdinInspector.Modules.UnityLocalization"><HintPath>$(ManagedDir)/Sirenix.OdinInspector.Modules.UnityLocalization.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Sirenix.Serialization"><HintPath>$(ManagedDir)/Sirenix.Serialization.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Sirenix.Serialization.Config"><HintPath>$(ManagedDir)/Sirenix.Serialization.Config.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Sirenix.Utilities"><HintPath>$(ManagedDir)/Sirenix.Utilities.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SteamCommon"><HintPath>$(ManagedDir)/SteamCommon.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SteamManagerAssembly"><HintPath>$(ManagedDir)/SteamManagerAssembly.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Tayx.Graphy"><HintPath>$(ManagedDir)/Tayx.Graphy.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.AI.Navigation"><HintPath>$(ManagedDir)/Unity.AI.Navigation.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Addressables"><HintPath>$(ManagedDir)/Unity.Addressables.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Animation.Rigging"><HintPath>$(ManagedDir)/Unity.Animation.Rigging.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Animation.Rigging.DocCodeExamples"><HintPath>$(ManagedDir)/Unity.Animation.Rigging.DocCodeExamples.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Burst"><HintPath>$(ManagedDir)/Unity.Burst.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Burst.Unsafe"><HintPath>$(ManagedDir)/Unity.Burst.Unsafe.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Cinemachine"><HintPath>$(ManagedDir)/Unity.Cinemachine.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Collections"><HintPath>$(ManagedDir)/Unity.Collections.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Collections.LowLevel.ILSupport"><HintPath>$(ManagedDir)/Unity.Collections.LowLevel.ILSupport.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.InputSystem"><HintPath>$(ManagedDir)/Unity.InputSystem.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.InputSystem.ForUI"><HintPath>$(ManagedDir)/Unity.InputSystem.ForUI.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.InputSystem.RebindingUI"><HintPath>$(ManagedDir)/Unity.InputSystem.RebindingUI.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.InternalAPIEngineBridge.004"><HintPath>$(ManagedDir)/Unity.InternalAPIEngineBridge.004.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.InternalAPIEngineBridge.013"><HintPath>$(ManagedDir)/Unity.InternalAPIEngineBridge.013.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Localization"><HintPath>$(ManagedDir)/Unity.Localization.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Mathematics"><HintPath>$(ManagedDir)/Unity.Mathematics.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.MemoryProfiler"><HintPath>$(ManagedDir)/Unity.MemoryProfiler.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Microsoft.GDK"><HintPath>$(ManagedDir)/Unity.Microsoft.GDK.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Microsoft.GDK.Tools"><HintPath>$(ManagedDir)/Unity.Microsoft.GDK.Tools.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Multiplayer.Center.Common"><HintPath>$(ManagedDir)/Unity.Multiplayer.Center.Common.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Networking.Transport"><HintPath>$(ManagedDir)/Unity.Networking.Transport.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Profiling.Core"><HintPath>$(ManagedDir)/Unity.Profiling.Core.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary"><HintPath>$(ManagedDir)/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.RenderPipelines.Core.Runtime"><HintPath>$(ManagedDir)/Unity.RenderPipelines.Core.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.RenderPipelines.Core.Runtime.Shared"><HintPath>$(ManagedDir)/Unity.RenderPipelines.Core.Runtime.Shared.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary"><HintPath>$(ManagedDir)/Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.RenderPipelines.GPUDriven.Runtime"><HintPath>$(ManagedDir)/Unity.RenderPipelines.GPUDriven.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary"><HintPath>$(ManagedDir)/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.RenderPipelines.Universal.2D.Runtime"><HintPath>$(ManagedDir)/Unity.RenderPipelines.Universal.2D.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.RenderPipelines.Universal.Config.Runtime"><HintPath>$(ManagedDir)/Unity.RenderPipelines.Universal.Config.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.RenderPipelines.Universal.Runtime"><HintPath>$(ManagedDir)/Unity.RenderPipelines.Universal.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.RenderPipelines.Universal.Shaders"><HintPath>$(ManagedDir)/Unity.RenderPipelines.Universal.Shaders.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.ResourceManager"><HintPath>$(ManagedDir)/Unity.ResourceManager.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.ScriptableBuildPipeline"><HintPath>$(ManagedDir)/Unity.ScriptableBuildPipeline.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Authentication"><HintPath>$(ManagedDir)/Unity.Services.Authentication.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Authentication.PlayerAccounts"><HintPath>$(ManagedDir)/Unity.Services.Authentication.PlayerAccounts.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Core"><HintPath>$(ManagedDir)/Unity.Services.Core.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Core.Analytics"><HintPath>$(ManagedDir)/Unity.Services.Core.Analytics.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Core.Components"><HintPath>$(ManagedDir)/Unity.Services.Core.Components.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Core.Configuration"><HintPath>$(ManagedDir)/Unity.Services.Core.Configuration.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Core.Device"><HintPath>$(ManagedDir)/Unity.Services.Core.Device.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Core.Environments"><HintPath>$(ManagedDir)/Unity.Services.Core.Environments.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Core.Environments.Internal"><HintPath>$(ManagedDir)/Unity.Services.Core.Environments.Internal.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Core.Internal"><HintPath>$(ManagedDir)/Unity.Services.Core.Internal.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Core.Networking"><HintPath>$(ManagedDir)/Unity.Services.Core.Networking.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Core.Registration"><HintPath>$(ManagedDir)/Unity.Services.Core.Registration.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Core.Scheduler"><HintPath>$(ManagedDir)/Unity.Services.Core.Scheduler.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Core.Telemetry"><HintPath>$(ManagedDir)/Unity.Services.Core.Telemetry.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Core.Threading"><HintPath>$(ManagedDir)/Unity.Services.Core.Threading.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Multiplayer"><HintPath>$(ManagedDir)/Unity.Services.Multiplayer.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.QoS"><HintPath>$(ManagedDir)/Unity.Services.QoS.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Services.Wire.Internal"><HintPath>$(ManagedDir)/Unity.Services.Wire.Internal.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Splines"><HintPath>$(ManagedDir)/Unity.Splines.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.TextMeshPro"><HintPath>$(ManagedDir)/Unity.TextMeshPro.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Timeline"><HintPath>$(ManagedDir)/Unity.Timeline.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.UnifiedRayTracing.Runtime"><HintPath>$(ManagedDir)/Unity.UnifiedRayTracing.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.VisualEffectGraph.Runtime"><HintPath>$(ManagedDir)/Unity.VisualEffectGraph.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine"><HintPath>$(ManagedDir)/UnityEngine.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AIModule"><HintPath>$(ManagedDir)/UnityEngine.AIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AMDModule"><HintPath>$(ManagedDir)/UnityEngine.AMDModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ARModule"><HintPath>$(ManagedDir)/UnityEngine.ARModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AccessibilityModule"><HintPath>$(ManagedDir)/UnityEngine.AccessibilityModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AdaptivePerformanceModule"><HintPath>$(ManagedDir)/UnityEngine.AdaptivePerformanceModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AndroidJNIModule"><HintPath>$(ManagedDir)/UnityEngine.AndroidJNIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AnimationModule"><HintPath>$(ManagedDir)/UnityEngine.AnimationModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AssetBundleModule"><HintPath>$(ManagedDir)/UnityEngine.AssetBundleModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AudioModule"><HintPath>$(ManagedDir)/UnityEngine.AudioModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ClothModule"><HintPath>$(ManagedDir)/UnityEngine.ClothModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ClusterInputModule"><HintPath>$(ManagedDir)/UnityEngine.ClusterInputModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ClusterRendererModule"><HintPath>$(ManagedDir)/UnityEngine.ClusterRendererModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ContentLoadModule"><HintPath>$(ManagedDir)/UnityEngine.ContentLoadModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(ManagedDir)/UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CrashReportingModule"><HintPath>$(ManagedDir)/UnityEngine.CrashReportingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.DSPGraphModule"><HintPath>$(ManagedDir)/UnityEngine.DSPGraphModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.DirectorModule"><HintPath>$(ManagedDir)/UnityEngine.DirectorModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.GIModule"><HintPath>$(ManagedDir)/UnityEngine.GIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.GameCenterModule"><HintPath>$(ManagedDir)/UnityEngine.GameCenterModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.GraphicsStateCollectionSerializerModule"><HintPath>$(ManagedDir)/UnityEngine.GraphicsStateCollectionSerializerModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.GridModule"><HintPath>$(ManagedDir)/UnityEngine.GridModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.HierarchyCoreModule"><HintPath>$(ManagedDir)/UnityEngine.HierarchyCoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.HierarchyModule"><HintPath>$(ManagedDir)/UnityEngine.HierarchyModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.HotReloadModule"><HintPath>$(ManagedDir)/UnityEngine.HotReloadModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.IMGUIModule"><HintPath>$(ManagedDir)/UnityEngine.IMGUIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.IdentifiersModule"><HintPath>$(ManagedDir)/UnityEngine.IdentifiersModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ImageConversionModule"><HintPath>$(ManagedDir)/UnityEngine.ImageConversionModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.InputForUIModule"><HintPath>$(ManagedDir)/UnityEngine.InputForUIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.InputLegacyModule"><HintPath>$(ManagedDir)/UnityEngine.InputLegacyModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.InputModule"><HintPath>$(ManagedDir)/UnityEngine.InputModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.InsightsModule"><HintPath>$(ManagedDir)/UnityEngine.InsightsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.JSONSerializeModule"><HintPath>$(ManagedDir)/UnityEngine.JSONSerializeModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.LocalizationModule"><HintPath>$(ManagedDir)/UnityEngine.LocalizationModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.MarshallingModule"><HintPath>$(ManagedDir)/UnityEngine.MarshallingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.MultiplayerModule"><HintPath>$(ManagedDir)/UnityEngine.MultiplayerModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.NVIDIAModule"><HintPath>$(ManagedDir)/UnityEngine.NVIDIAModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule"><HintPath>$(ManagedDir)/UnityEngine.ParticleSystemModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.PerformanceReportingModule"><HintPath>$(ManagedDir)/UnityEngine.PerformanceReportingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.Physics2DModule"><HintPath>$(ManagedDir)/UnityEngine.Physics2DModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.PhysicsBackendPhysXModule"><HintPath>$(ManagedDir)/UnityEngine.PhysicsBackendPhysXModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.PhysicsModule"><HintPath>$(ManagedDir)/UnityEngine.PhysicsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.PropertiesModule"><HintPath>$(ManagedDir)/UnityEngine.PropertiesModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.RenderAs2DModule"><HintPath>$(ManagedDir)/UnityEngine.RenderAs2DModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule"><HintPath>$(ManagedDir)/UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ScreenCaptureModule"><HintPath>$(ManagedDir)/UnityEngine.ScreenCaptureModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ShaderRuntimeModule"><HintPath>$(ManagedDir)/UnityEngine.ShaderRuntimeModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ShaderVariantAnalyticsModule"><HintPath>$(ManagedDir)/UnityEngine.ShaderVariantAnalyticsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.SharedInternalsModule"><HintPath>$(ManagedDir)/UnityEngine.SharedInternalsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.SpriteMaskModule"><HintPath>$(ManagedDir)/UnityEngine.SpriteMaskModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.SpriteShapeModule"><HintPath>$(ManagedDir)/UnityEngine.SpriteShapeModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.StreamingModule"><HintPath>$(ManagedDir)/UnityEngine.StreamingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.SubstanceModule"><HintPath>$(ManagedDir)/UnityEngine.SubstanceModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.SubsystemsModule"><HintPath>$(ManagedDir)/UnityEngine.SubsystemsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TLSModule"><HintPath>$(ManagedDir)/UnityEngine.TLSModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TerrainModule"><HintPath>$(ManagedDir)/UnityEngine.TerrainModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TerrainPhysicsModule"><HintPath>$(ManagedDir)/UnityEngine.TerrainPhysicsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TextCoreFontEngineModule"><HintPath>$(ManagedDir)/UnityEngine.TextCoreFontEngineModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TextCoreTextEngineModule"><HintPath>$(ManagedDir)/UnityEngine.TextCoreTextEngineModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TextRenderingModule"><HintPath>$(ManagedDir)/UnityEngine.TextRenderingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TilemapModule"><HintPath>$(ManagedDir)/UnityEngine.TilemapModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UI"><HintPath>$(ManagedDir)/UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UIElementsModule"><HintPath>$(ManagedDir)/UnityEngine.UIElementsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UIModule"><HintPath>$(ManagedDir)/UnityEngine.UIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UmbraModule"><HintPath>$(ManagedDir)/UnityEngine.UmbraModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityAnalyticsCommonModule"><HintPath>$(ManagedDir)/UnityEngine.UnityAnalyticsCommonModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityAnalyticsModule"><HintPath>$(ManagedDir)/UnityEngine.UnityAnalyticsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityConnectModule"><HintPath>$(ManagedDir)/UnityEngine.UnityConnectModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityConsentModule"><HintPath>$(ManagedDir)/UnityEngine.UnityConsentModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityCurlModule"><HintPath>$(ManagedDir)/UnityEngine.UnityCurlModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule"><HintPath>$(ManagedDir)/UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAudioModule"><HintPath>$(ManagedDir)/UnityEngine.UnityWebRequestAudioModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule"><HintPath>$(ManagedDir)/UnityEngine.UnityWebRequestModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule"><HintPath>$(ManagedDir)/UnityEngine.UnityWebRequestTextureModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule"><HintPath>$(ManagedDir)/UnityEngine.UnityWebRequestWWWModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.VFXModule"><HintPath>$(ManagedDir)/UnityEngine.VFXModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.VRModule"><HintPath>$(ManagedDir)/UnityEngine.VRModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.VectorGraphicsModule"><HintPath>$(ManagedDir)/UnityEngine.VectorGraphicsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.VehiclesModule"><HintPath>$(ManagedDir)/UnityEngine.VehiclesModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.VideoModule"><HintPath>$(ManagedDir)/UnityEngine.VideoModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.VirtualTexturingModule"><HintPath>$(ManagedDir)/UnityEngine.VirtualTexturingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.WindModule"><HintPath>$(ManagedDir)/UnityEngine.WindModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.XRModule"><HintPath>$(ManagedDir)/UnityEngine.XRModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityUIExtensions"><HintPath>$(ManagedDir)/UnityUIExtensions.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="User"><HintPath>$(ManagedDir)/User.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Utilities"><HintPath>$(ManagedDir)/Utilities.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Whinarn.UnityMeshSimplifier.Runtime"><HintPath>$(ManagedDir)/Whinarn.UnityMeshSimplifier.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="XblPCSandbox"><HintPath>$(ManagedDir)/XblPCSandbox.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Zorro.AutoLOD"><HintPath>$(ManagedDir)/Zorro.AutoLOD.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Zorro.ControllerSupport"><HintPath>$(ManagedDir)/Zorro.ControllerSupport.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Zorro.Core.Runtime"><HintPath>$(ManagedDir)/Zorro.Core.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Zorro.JiggleBones"><HintPath>$(ManagedDir)/Zorro.JiggleBones.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Zorro.PhotonUtility"><HintPath>$(ManagedDir)/Zorro.PhotonUtility.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Zorro.Settings.Runtime"><HintPath>$(ManagedDir)/Zorro.Settings.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Zorro.UI.Runtime"><HintPath>$(ManagedDir)/Zorro.UI.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="com.rlabrecque.steamworks.net"><HintPath>$(ManagedDir)/com.rlabrecque.steamworks.net.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="pworld"><HintPath>$(ManagedDir)/pworld.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="sc.posteffects.runtime"><HintPath>$(ManagedDir)/sc.posteffects.runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="unity-websocket-sharp"><HintPath>$(ManagedDir)/unity-websocket-sharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="websocket-sharp"><HintPath>$(ManagedDir)/websocket-sharp.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>
