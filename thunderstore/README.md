@@ -79,7 +79,7 @@ Settings are in `BepInEx/config/com.inkslinger.playerradio.cfg` (or your mod man
 | `MusicFolder` | Use a different Music folder |
 | `ShowHud`, `ShowKeyHints`, `ShowNearbyRadios`, `MarkRadioCarrierName` | What the overlay shows (`ShowKeyHints` = the key hints line in the top-right overlay, default on) |
 | `PauseMenuRadioPage`, `PauseMenuButtonPosition` | The pause menu's RADIO button and page, and where the button goes (empty = automatic) |
-| `DumpPauseMenuHierarchy` | Write the pause menu's layout to the log once per launch (for layout bug reports) |
+| `DumpPauseMenuHierarchy` | Write the pause menu's layout to the log once per launch, for layout bug reports (default off) |
 | `VerboseLogging` | More detail in the log |
 
 ## Known limitations

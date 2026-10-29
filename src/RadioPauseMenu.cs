@@ -164,7 +164,7 @@ namespace PlayerRadio
             try
             {
                 var sb = new StringBuilder();
-                sb.AppendLine($"Pause menu hierarchy (PlayerRadio {Plugin.Version}; set Debug.DumpPauseMenuHierarchy = false to stop):");
+                sb.AppendLine($"Pause menu hierarchy (PlayerRadio {Plugin.Version}; turn off Debug.DumpPauseMenuHierarchy to stop):");
                 int nodes = 0;
                 Dump(root, 0, sb, ref nodes);
                 Plugin.Log.LogInfo(sb.ToString());

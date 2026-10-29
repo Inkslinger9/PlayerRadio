@@ -21,7 +21,7 @@ Requirements: the .NET SDK (6 or newer) and PEAK with BepInExPack_PEAK installed
 Zip these files at the root of the archive: `thunderstore/manifest.json`, `thunderstore/README.md`, `thunderstore/CHANGELOG.md`, `thunderstore/icon.png`, `LICENSE` and the built `PlayerRadio.dll`.
 
 ## Pause menu page
-`src/RadioPauseMenu.cs` adds the RADIO button to the pause menu (a clone of the game's Settings button, from a Harmony postfix on `PauseMenuMainPage.Start`), and `src/RadioPausePage.cs` is the page itself: a `Zorro.UI.UIPage` that implements `IHaveParentPage` and `INavigationPage` like the game's own Settings/Controls pages. No UI library dependency. If the game's menu changes, the mod logs a warning and skips the page; the hotkeys keep working. `Debug.DumpPauseMenuHierarchy` logs the menu's layout once per launch.
+`src/RadioPauseMenu.cs` adds the RADIO button to the pause menu (a clone of the game's Settings button, from a Harmony postfix on `PauseMenuMainPage.Start`), and `src/RadioPausePage.cs` is the page itself: a `Zorro.UI.UIPage` that implements `IHaveParentPage` and `INavigationPage` like the game's own Settings/Controls pages. No UI library dependency. If the game's menu changes, the mod logs a warning and skips the page; the hotkeys keep working. `Debug.DumpPauseMenuHierarchy` (off by default) logs the menu's layout once per launch.
 
 The network protocol is the `major.minor` part of the version (`0.2`), so every 0.2.x release talks to every other 0.2.x release.
 

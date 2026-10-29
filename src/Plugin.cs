@@ -122,7 +122,7 @@ namespace PlayerRadio
             ShowNearbyRadios = Config.Bind("UI", "ShowNearbyRadios", true, "List other players' radios playing near you (owner, title, distance) in the overlay.");
             MarkSourcePlayerName = Config.Bind("UI", "MarkRadioCarrierName", true, "Append [Radio] to the name shown when looking at a player whose radio is playing.");
             VerboseLogging = Config.Bind("Debug", "VerboseLogging", false, "Log every state change, transfer step and drift correction.");
-            DumpPauseMenu = Config.Bind("Debug", "DumpPauseMenuHierarchy", true, "Log the pause menu's UI hierarchy (names, positions, components) once per game launch, the first time the pause menu opens. For fixing the RADIO button layout; safe to turn off.");
+            DumpPauseMenu = Config.Bind("Debug", "DumpPauseMenuHierarchy", false, "Off by default. Log the pause menu's UI hierarchy (names, positions, components) once per game launch, the first time the pause menu opens. For fixing the RADIO button layout; safe to turn off.");
             ConfigVersion = Config.Bind("Internal", "ConfigVersion", 1, "Used by Player Radio to upgrade old settings. Don't change.");
             MigrateConfig();
         }

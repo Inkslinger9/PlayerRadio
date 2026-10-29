@@ -5,7 +5,7 @@
 - The hotkeys now also work while the pause menu is open.
 - New `EnableHotkeys` setting (default on) to turn all radio hotkeys off.
 - `ShowKeyHints` (the key hints in the top-right overlay, default on) is also hidden when hotkeys are off. The overlay hides itself while the RADIO page is open.
-- New `PauseMenuRadioPage`, `PauseMenuButtonPosition` and `DumpPauseMenuHierarchy` settings (see README).
+- New `PauseMenuRadioPage`, `PauseMenuButtonPosition` and `DumpPauseMenuHierarchy` (off by default) settings (see README).
 - Compatible with 0.2.0-0.2.2: no network changes.
 
 ## 0.2.2
