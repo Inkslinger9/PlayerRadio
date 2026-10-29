@@ -51,4 +51,16 @@ namespace PlayerRadio
             catch { /* cosmetic only */ }
         }
     }
+
+    // private void PauseMenuMainPage.Start() (AC/PauseMenuMainPage.cs:58) adds the button listeners; runs the first
+    // time the pause menu opens in each scene. Patched by name because it is private.
+    [HarmonyPatch(typeof(PauseMenuMainPage), "Start")]
+    internal static class Patch_PauseMenuMainPageStart
+    {
+        private static void Postfix(PauseMenuMainPage __instance)
+        {
+            try { RadioPauseMenu.Install(__instance); }
+            catch (Exception e) { Plugin.Log.LogWarning($"Pause menu RADIO page not added (hotkeys still work): {e}"); }
+        }
+    }
 }

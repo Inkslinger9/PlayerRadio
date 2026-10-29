@@ -7,7 +7,7 @@
     <LangVersion>latest</LangVersion>
     <AssemblyName>PlayerRadio</AssemblyName>
     <RootNamespace>PlayerRadio</RootNamespace>
-    <Version>0.2.2</Version>
+    <Version>0.2.3</Version>
     <Authors>Inkslinger</Authors>
     <Product>Player Radio</Product>
     <Nullable>disable</Nullable>

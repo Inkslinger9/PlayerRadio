@@ -15,7 +15,7 @@ namespace PlayerRadio
 
         private void OnGUI()
         {
-            if (!Plugin.ShowHud.Value) return;
+            if (!Plugin.ShowHud.Value || RadioPausePage.Showing) return;
             var s = RadioSession.Instance;
             if (s == null) return;
 
@@ -88,7 +88,7 @@ namespace PlayerRadio
 
             if (toast) Line("<i>" + s.Toast + "</i>");
 
-            if (Plugin.ShowKeyHints.Value && (Time.unscaledTime < _hintsUntil || !active || toast))
+            if (Plugin.ShowKeyHints.Value && Plugin.EnableHotkeys.Value && (Time.unscaledTime < _hintsUntil || !active || toast))
             {
                 _sb.Append("<size=").Append(Mathf.RoundToInt(size * 0.85f)).Append('>')
                    .Append('[').Append(s.KeyPlayPause.Display).Append("] play/pause  [")

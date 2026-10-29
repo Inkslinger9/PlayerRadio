@@ -12,7 +12,7 @@ namespace PlayerRadio
     {
         public const string Guid = "com.inkslinger.playerradio";
         public const string Name = "Player Radio";
-        public const string Version = "0.2.2";
+        public const string Version = "0.2.3"; // the network protocol is the major.minor part ("0.2"), see RadioSession.Protocol
 
         internal static Plugin Instance;
         internal static ManualLogSource Log;
@@ -31,6 +31,8 @@ namespace PlayerRadio
         internal static ConfigEntry<string> MusicFolderOverride;
         // UI / debug
         internal static ConfigEntry<bool> ShowHud, ShowKeyHints, ShowNearbyRadios, MarkSourcePlayerName, VerboseLogging;
+        internal static ConfigEntry<bool> EnableHotkeys, PauseMenuPage, DumpPauseMenu;
+        internal static ConfigEntry<string> PauseMenuButtonPosition;
 
         private Harmony _harmony;
         private GameObject _host;
@@ -48,6 +50,7 @@ namespace PlayerRadio
             ApplyPatch(typeof(Patch_CharacterDie));
             ApplyPatch(typeof(Patch_CharacterZombify));
             ApplyPatch(typeof(Patch_CharacterInteractibleName));
+            ApplyPatch(typeof(Patch_PauseMenuMainPageStart));
 
             _host = new GameObject("PlayerRadio");
             DontDestroyOnLoad(_host);
@@ -83,6 +86,7 @@ namespace PlayerRadio
         private void BindConfig()
         {
             const string keyDesc = "Unity Input System control path, e.g. <Keyboard>/f5, <Keyboard>/numpad5, <Mouse>/forwardButton.";
+            EnableHotkeys = Config.Bind("Hotkeys", "EnableHotkeys", true, "Turn the radio hotkeys below on or off. They also work while the pause menu is open. Everything they do is also on the pause menu's RADIO page.");
             KeyPlayPause = Config.Bind("Hotkeys", "PlayPause", "<Keyboard>/f5", "Play / pause YOUR radio (plays your Music folder from your character; everyone nearby hears it). " + keyDesc);
             KeySkip = Config.Bind("Hotkeys", "Skip", "<Keyboard>/f7", "Your radio: next track. " + keyDesc);
             KeyPrevious = Config.Bind("Hotkeys", "Previous", "<Keyboard>/f6", "Your radio: previous track (restarts the current track if more than 3 s in). " + keyDesc);
@@ -112,10 +116,13 @@ namespace PlayerRadio
             MusicFolderOverride = Config.Bind("Library", "MusicFolder", "", "Optional absolute path to your music folder. Empty = BepInEx/config/PlayerRadio/Music.");
 
             ShowHud = Config.Bind("UI", "ShowHud", true, "Show the small radio overlay (your radio, transfers, nearby radios).");
-            ShowKeyHints = Config.Bind("UI", "ShowKeyHints", true, "Show hotkey hints in the overlay.");
+            ShowKeyHints = Config.Bind("UI", "ShowKeyHints", true, "Show the hotkey hints line in the top-right overlay (hidden anyway when EnableHotkeys is off).");
+            PauseMenuPage = Config.Bind("UI", "PauseMenuRadioPage", true, "Add a RADIO button to the pause menu that opens the Player Radio page (now playing, controls, volumes, song list).");
+            PauseMenuButtonPosition = Config.Bind("UI", "PauseMenuButtonPosition", "", "Leave empty to place the pause-menu RADIO button automatically (under the existing buttons). Or set x,y (anchoredPosition in the button column, e.g. 0,-300) if it overlaps something; see the pause-menu dump in the log.");
             ShowNearbyRadios = Config.Bind("UI", "ShowNearbyRadios", true, "List other players' radios playing near you (owner, title, distance) in the overlay.");
             MarkSourcePlayerName = Config.Bind("UI", "MarkRadioCarrierName", true, "Append [Radio] to the name shown when looking at a player whose radio is playing.");
             VerboseLogging = Config.Bind("Debug", "VerboseLogging", false, "Log every state change, transfer step and drift correction.");
+            DumpPauseMenu = Config.Bind("Debug", "DumpPauseMenuHierarchy", true, "Log the pause menu's UI hierarchy (names, positions, components) once per game launch, the first time the pause menu opens. For fixing the RADIO button layout; safe to turn off.");
             ConfigVersion = Config.Bind("Internal", "ConfigVersion", 1, "Used by Player Radio to upgrade old settings. Don't change.");
             MigrateConfig();
         }

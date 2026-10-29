@@ -352,7 +352,8 @@ namespace PlayerRadio
             if (IsOnline) PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { PropRadio, s.Serialize() } });
         }
 
-        private void PlayPause()
+        /// <summary>Play / pause your radio (hotkey, pause-menu Radio page).</summary>
+        internal void PlayPause()
         {
             double now = Now;
             var s = Mine.State.Clone();
@@ -367,7 +368,7 @@ namespace PlayerRadio
             }
             if (MyTracks.Count == 0)
             {
-                ShowToast($"No songs yet - press [{KeyOpenFolder.Display}] to open your Music folder", 5f);
+                ShowToast(NoSongsHint, 5f);
                 return;
             }
             if (s.Current == null || IndexInMyTracks(s.CurrentHex) < 0)
@@ -383,11 +384,12 @@ namespace PlayerRadio
             ShowToast("Your radio: playing (everyone near you hears it)");
         }
 
-        private void Step(int dir)
+        /// <summary>Next (+1) / previous (-1) song; previous restarts the current song if more than 3 s in.</summary>
+        internal void Step(int dir)
         {
             if (MyTracks.Count == 0)
             {
-                ShowToast($"No songs yet - press [{KeyOpenFolder.Display}] to open your Music folder", 5f);
+                ShowToast(NoSongsHint, 5f);
                 return;
             }
             double now = Now;
@@ -705,26 +707,58 @@ namespace PlayerRadio
 
         private void HandleHotkeys()
         {
+            if (!Plugin.EnableHotkeys.Value) return;
             if (!Application.isFocused) return;
             // Opening the folder doesn't affect gameplay, so it also works while a game menu has input.
             if (KeyOpenFolder.Pressed()) RadioActions.OpenMusicFolder();
             var gui = GUIManager.instance;
-            if (gui != null && (gui.windowBlockingInput || gui.wheelActive)) return; // same checks as Character.CanDoInput
+            // Same checks as Character.CanDoInput, except the pause menu: radio keys don't move the character,
+            // so they also work there (GUIManager.InPauseMenu is public static, AC/GUIManager.cs:304).
+            if (gui != null && (gui.wheelActive || (gui.windowBlockingInput && !GUIManager.InPauseMenu))) return;
 
             if (KeyPlayPause.Pressed()) PlayPause();
             if (KeySkip.Pressed()) Step(+1);
             if (KeyPrevious.Pressed()) Step(-1);
-            if (KeyMuteOthers.Pressed())
-            {
-                OthersMuted = !OthersMuted;
-                Plugin.Log.LogInfo($"Other players' radios {(OthersMuted ? "muted" : "unmuted")} (local only).");
-                ShowToast(OthersMuted ? "Other radios muted (only for you)" : "Other radios unmuted");
-            }
+            if (KeyMuteOthers.Pressed()) SetOthersMuted(!OthersMuted);
             if (KeyVolDown.Pressed()) ChangeVolume(-Plugin.VolumeStep.Value);
             if (KeyVolUp.Pressed()) ChangeVolume(Plugin.VolumeStep.Value);
         }
 
-        private void ChangeVolume(float delta)
+        /// <summary>Hint shown when the Music folder is empty (mentions F4 only while hotkeys are on).</summary>
+        internal string NoSongsHint => Plugin.EnableHotkeys.Value
+            ? $"No songs yet - press [{KeyOpenFolder.Display}] or use Pause menu > Radio to open your Music folder"
+            : "No songs yet - use Pause menu > Radio > Open Music Folder";
+
+        /// <summary>Local-only: silence (or restore) everyone else's radio for you.</summary>
+        internal void SetOthersMuted(bool muted)
+        {
+            if (OthersMuted == muted) return;
+            OthersMuted = muted;
+            Plugin.Log.LogInfo($"Other players' radios {(OthersMuted ? "muted" : "unmuted")} (local only).");
+            ShowToast(OthersMuted ? "Other radios muted (only for you)" : "Other radios unmuted");
+        }
+
+        /// <summary>Play one of YOUR songs right now, from the start (pause-menu song list).</summary>
+        public void PlayTrack(TrackMeta track)
+        {
+            if (track == null) return;
+            if (IndexInMyTracks(track.Hex) < 0)
+            {
+                ShowToast("That song is no longer in your Music folder");
+                return;
+            }
+            double now = Now;
+            var s = Mine.State.Clone();
+            s.Current = track;
+            s.Next = null; // Commit picks the following song
+            s.AnchorPos = 0;
+            s.AnchorTime = now;
+            s.Playing = true;
+            Commit(s, "picked");
+            ShowToast($"Your radio: {Util.Trunc(track.Title, 40)}");
+        }
+
+        internal void ChangeVolume(float delta)
         {
             Plugin.MyRadioVolume.Value = Mathf.Clamp01(Mathf.Round((Plugin.MyRadioVolume.Value + delta) * 100f) / 100f);
             ShowToast($"Your radio volume {Mathf.RoundToInt(Plugin.MyRadioVolume.Value * 100)}% (as you hear it)");

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.3
+- New **RADIO page in the pause menu** (Esc → RADIO): now playing with the song time, previous / play-pause / next, sliders for your radio's volume and other radios' volume, mute other radios, open the Music folder, and a list of your songs (click one to play it). Back, Esc or the gamepad back button return to the pause menu. Works with mouse and gamepad.
+- The hotkeys now also work while the pause menu is open.
+- New `EnableHotkeys` setting (default on) to turn all radio hotkeys off.
+- `ShowKeyHints` (the key hints in the top-right overlay, default on) is also hidden when hotkeys are off. The overlay hides itself while the RADIO page is open.
+- New `PauseMenuRadioPage`, `PauseMenuButtonPosition` and `DumpPauseMenuHierarchy` settings (see README).
+- Compatible with 0.2.0-0.2.2: no network changes.
+
 ## 0.2.2
 - F4 now opens the Music folder through Unity (`Application.OpenURL` with a `file:///` URL) instead of starting `explorer.exe`. The mod no longer uses `System.Diagnostics.Process` anywhere.
 - README: added an AI disclosure, a "What this mod sends and stores" section, and links to the source code (MIT license).

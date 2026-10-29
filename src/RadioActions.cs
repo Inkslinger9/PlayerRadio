@@ -4,10 +4,17 @@ using UnityEngine;
 
 namespace PlayerRadio
 {
-    /// <summary>User-facing actions shared by hotkeys and (later) HUD buttons.</summary>
+    /// <summary>User-facing actions shared by hotkeys and the pause-menu Radio page.</summary>
     public static class RadioActions
     {
         private static float _lastOpen = -10f;
+
+        public static void PlayPause() => RadioSession.Instance?.PlayPause();
+        public static void Next() => RadioSession.Instance?.Step(+1);
+        public static void Previous() => RadioSession.Instance?.Step(-1);
+        public static void PlayTrack(TrackMeta track) => RadioSession.Instance?.PlayTrack(track);
+        public static void SetOthersMuted(bool muted) => RadioSession.Instance?.SetOthersMuted(muted);
+        public static void ToggleOthersMuted() { var s = RadioSession.Instance; if (s != null) s.SetOthersMuted(!s.OthersMuted); }
 
         /// <summary>The Music folder actually in use (the library's, else the configured/default path), as a full path.</summary>
         public static string MusicFolder
