@@ -2,7 +2,7 @@
     "name": "PlayerRadio",
     "version_number": "0.2.3",
     "website_url": "https://github.com/Inkslinger9/PlayerRadio",
-    "description": "Every player gets their own radio playing their own mp3/wav/ogg music from their character in 3D. Everyone hears everyone's radio; missing songs are streamed. Local volumes. Works solo. Others need the mod to hear you.",
+    "description": "Every player gets their own 3D radio playing their own mp3/wav/ogg music from their character. Everyone hears everyone's radio; missing songs are streamed. Works solo. Others need the mod to hear you. Pause the game and click RADIO for controls.",
     "dependencies": [
         "BepInEx-BepInExPack_PEAK-5.4.75301"
     ]
